@@ -74,7 +74,6 @@
                 if(remainingInstalls >= 500001 && remainingInstalls <= 1000000) this.youOwe = remainingInstalls * this.rates[this.inputSubscription].costs[2];
                 if(remainingInstalls >= 100001 && remainingInstalls <= 500000) this.youOwe = remainingInstalls * this.rates[this.inputSubscription].costs[1];
                 if(remainingInstalls >= 1 && remainingInstalls <= 10000) this.youOwe = remainingInstalls * this.rates[this.inputSubscription].costs[0];
-                this.youOwe = this.youOwe.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             },
             formatMoola(){
                 return this.youOwe.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
