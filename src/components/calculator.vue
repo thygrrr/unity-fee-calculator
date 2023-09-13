@@ -20,7 +20,7 @@
             <ul>
                 <li>Unity is going to charge devs <b>per install</b>.</li>
                 <li>Read more at the <a href="https://blog.unity.com/news/plan-pricing-and-packaging-updates">Unity Blog</a></li>
-                <li>Join the conversation at the <a href="https://forum.unity.com/threads/unity-plan-pricing-and-packaging-updates.1482750">Unity Forums</li>
+                <li>Join the conversation at the <a href="https://forum.unity.com/threads/unity-plan-pricing-and-packaging-updates.1482750">Unity Forums</a></li>
             </ul>
             <a href="https://twitter.com/kurtruslfanclub/status/1701621432894267593"><img src="tweet.png" /></a>
         </div>
