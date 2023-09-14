@@ -17,7 +17,7 @@
                 <li>Revenue: $<input type="number" v-model='futureRevenue' /></li>
                 <li>Installs:<input type="number" v-model='futureInstalls' /></li>
                 <br/>
-                <li>Publisher / App Store Cuts:<input type="number" v-model='storeCuts' /></li>
+                <li>Publisher / App Store Cut %:<input type="number" v-model='storeCuts' /></li>
                 <li><a href="https://en.wikipedia.org/wiki/Operating_expense">Operating Expenses</a>:<input type="number" v-model='opEx' /></li>
                 <br/>
                 <li><div></div><div style="text-align: center; width: 50%"><button v-on:click="doMath">Hit Me</button></div></li>
@@ -60,7 +60,7 @@
                 installs: 200000,
                 futureInstalls: 200000,
                 futureRevenue: 200000,
-                storeCuts : 0.3,
+                storeCuts : 30,
                 opEx : 100000,
                 opExPerInstall : 0,
                 youOwe : 0,
@@ -108,7 +108,7 @@
                 }
                 this.youOwe += Math.max(0, surplusInstalls * costs[costs.length-1]);
                 this.revenuePerInstall = this.futureRevenue / this.futureInstalls;
-                this.revenueShare = this.youOwe / this.futureRevenue;
+                this.revenueShare = this.youOwe / this.futureRevenue * 100;
             },
             formatMoola(){
                 return this.youOwe.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -117,10 +117,10 @@
                 return this.revenuePerInstall.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             },
             formatRevShare(){
-                return (this.revenueShare*100).toFixed(2) + "%";
+                return (this.revenueShare).toFixed(2) + "%";
             },
             formatEarnings(){
-                return (this.revenuePerInstall - this.revenuePerInstall * (this.revenueShare+this.storeCuts) - this.opExPerInstall).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                return (this.revenuePerInstall - this.revenuePerInstall * ((this.revenueShare + this.storeCuts)*0.01) - this.opExPerInstall).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             }
         },
     }
