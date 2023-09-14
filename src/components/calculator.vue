@@ -18,7 +18,7 @@
                 <li>Installs:<input type="number" v-model='futureInstalls' /></li>
                 <br/>
                 <li>Publisher / App Store Cuts:<input type="number" v-model='storeCuts' /></li>
-                <li>Operating Expenses:<input type="number" v-model='opEx' /></li>
+                <li><a href="https://en.wikipedia.org/wiki/Operating_expense">Operating Expenses</a>:<input type="number" v-model='opEx' /></li>
                 <br/>
                 <li><div></div><div style="text-align: center; width: 50%"><button v-on:click="doMath">Hit Me</button></div></li>
                 <br/>
