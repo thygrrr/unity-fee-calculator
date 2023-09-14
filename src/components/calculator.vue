@@ -10,9 +10,15 @@
                     </select>     
                 </li>
                 <li>12-Month Revenue: $<input type="number" v-model='revenue' /></li>
-                <li>Lifetime Installs:<input type="number" v-model='installs' /></li>
+                <li>Lifetime Installs until now:<input type="number" v-model='installs' /></li>
+                <br/>
+                <li>Next Period Revenue: $<input type="number" v-model='futureRevenue' /></li>
+                <li>Next Period Installs:<input type="number" v-model='futureInstalls' /></li>
                 <li><div></div><div style="text-align: center; width: 50%"><button v-on:click="doMath">Hit Me</button></div></li>
                 <li class="amount" v-bind:class="youOwe > 0 ? 'bad': 'good'">You Owe: {{formatMoola()}}</li>
+                <li class="amount" v-bind:class="youOwe > 0 ? 'bad': 'good'">Revenue Share: {{formatRevShare()}}</li>
+                <li class="amount" v-bind:class="youOwe < 0 ? 'bad': 'good'">Revenue per Install: {{formatRPI()}}</li>
+                <li class="amount" v-bind:class="youOwe < 0 ? 'bad': 'good'">Earnings per Install: {{formatEarnings()}}</li>
             </ul>            
         </div>
         <div>
@@ -43,15 +49,20 @@
             return {
                 inputSubscription: 0,
                 revenue: 200000,
-                installs: 3000000,
+                installs: 200000,
+                futureInstalls: 200000,
+                futureRevenue: 200000,
                 youOwe : 0,
+                revenuePerInstall : 0,
+                revenueShare : 0,
                 subscriptions: [
                     {key: 0, value: 'Personal/Plus'}, 
                     {key: 1, value: 'Pro'}, 
                     {key: 2, value: 'Enterprise'}
                 ],
-                thresholdsRevenue: [200000, 1000000, 1000000],
-                thresholdsInstalls: [200000,1000000,1000000],
+                thresholdsRevenue: [200_000, 1_000_000, 1_000_000],
+                thresholdsInstalls: [200_000,1_000_000,1_000_000],
+                surplusBrackets: [100_000,400_000,1_000_000],
                 rates: [
                     {costs: [0.2,0.2,0.2,0.2]},
                     {costs: [0.15,0.075,0.03,0.02]},
@@ -65,18 +76,39 @@
         methods: {
             doMath(){
                 //1-100k, 100001-500k, 500001-1M, 1000001+
-                let remainingInstalls = this.installs - this.thresholdsInstalls[this.inputSubscription];                
-                console.log(`installs: ${this.installs}, remainingInstalls: ${remainingInstalls}, ${this.thresholdsInstalls[this.inputSubscription]}`);
+                let surplusInstalls = this.futureInstalls + this.installs - this.thresholdsInstalls[this.inputSubscription];    
+
+                console.log(`installs: ${this.installs}, surplusInstalls: ${surplusInstalls}`);
                 this.youOwe = 0;
-                console.log(`${remainingInstalls} <= ${this.thresholdsInstalls[this.inputSubscription]} && ${this.revenue} <= ${this.thresholdsRevenue[this.inputSubscription]}`)
+                this.revenueShare = 0;
+                this.revenuePerInstall = this.revenue / this.installs;
                 if(this.remainingInstalls <= this.thresholdsInstalls[this.inputSubscription] || this.revenue < this.thresholdsRevenue[this.inputSubscription]) return;
-                if(remainingInstalls >= 1000001) this.youOwe = remainingInstalls * this.rates[this.inputSubscription].costs[3];
-                if(remainingInstalls >= 500001 && remainingInstalls <= 1000000) this.youOwe = remainingInstalls * this.rates[this.inputSubscription].costs[2];
-                if(remainingInstalls >= 100001 && remainingInstalls <= 500000) this.youOwe = remainingInstalls * this.rates[this.inputSubscription].costs[1];
-                if(remainingInstalls >= 1 && remainingInstalls <= 10000) this.youOwe = remainingInstalls * this.rates[this.inputSubscription].costs[0];
+
+                console.log(`${surplusInstalls} <= ${this.thresholdsInstalls[this.inputSubscription]} && ${this.revenue} <= ${this.thresholdsRevenue[this.inputSubscription]}`)
+                
+                //We deduct each bracket individually, clamping between 0 and the bracket size
+                var costs = this.rates[this.inputSubscription].costs;
+                for(var i = 0; i < this.thresholdsRevenue.length; i++)
+                {
+                    var surplus = Math.min(surplusInstalls, this.surplusBrackets[i]);
+                    this.youOwe += Math.max(0, surplus * costs[i]);
+                    surplusInstalls -= surplus;                    
+                }
+                this.youOwe += Math.max(0, surplusInstalls * costs[costs.length-1]);
+                this.revenuePerInstall = this.futureRevenue / this.futureInstalls;
+                this.revenueShare = this.youOwe / this.futureRevenue;
             },
             formatMoola(){
                 return this.youOwe.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            },
+            formatRPI(){
+                return this.revenuePerInstall.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            },
+            formatRevShare(){
+                return this.revenueShare.toFixed(2) + "%";
+            },
+            formatEarnings(){
+                return (this.revenuePerInstall - this.revenuePerInstall * this.revenueShare).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             }
         },
     }
