@@ -14,11 +14,15 @@
                 <br/>
                 <li>Next Period Revenue: $<input type="number" v-model='futureRevenue' /></li>
                 <li>Next Period Installs:<input type="number" v-model='futureInstalls' /></li>
+                <br/>
+                <li>Publisher / App Store Cuts:<input type="number" v-model='storeCuts' /></li>
+                <br/>
                 <li><div></div><div style="text-align: center; width: 50%"><button v-on:click="doMath">Hit Me</button></div></li>
+                <br/>
                 <li class="amount" v-bind:class="youOwe > 0 ? 'bad': 'good'">You Owe: {{formatMoola()}}</li>
                 <li class="amount" v-bind:class="youOwe > 0 ? 'bad': 'good'">Revenue Share: {{formatRevShare()}}</li>
-                <li class="amount" v-bind:class="youOwe < 0 ? 'bad': 'good'">Revenue per Install: {{formatRPI()}}</li>
-                <li class="amount" v-bind:class="youOwe < 0 ? 'bad': 'good'">Earnings per Install: {{formatEarnings()}}</li>
+                <li class="amount" v-bind:class="youOwe">Revenue per Install: {{formatRPI()}}</li>
+                <li class="amount" v-bind:class="youOwe">Earnings per Install: {{formatEarnings()}}</li>
             </ul>            
         </div>
         <div>
@@ -52,6 +56,7 @@
                 installs: 200000,
                 futureInstalls: 200000,
                 futureRevenue: 200000,
+                storeCuts : 0.3,
                 youOwe : 0,
                 revenuePerInstall : 0,
                 revenueShare : 0,
@@ -108,7 +113,7 @@
                 return this.revenueShare.toFixed(2) + "%";
             },
             formatEarnings(){
-                return (this.revenuePerInstall - this.revenuePerInstall * this.revenueShare).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                return (this.revenuePerInstall - this.revenuePerInstall * (this.revenueShare+this.storeCuts)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             }
         },
     }
