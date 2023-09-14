@@ -9,20 +9,24 @@
                         <option v-for="sub in subscriptions" v-bind:value="sub.key">{{sub.value}}</option>
                     </select>     
                 </li>
+                <h3>Last 1 to 12 Months</h3>
                 <li>12-Month Revenue: $<input type="number" v-model='revenue' /></li>
                 <li>Lifetime Installs until now:<input type="number" v-model='installs' /></li>
                 <br/>
-                <li>Next Period Revenue: $<input type="number" v-model='futureRevenue' /></li>
-                <li>Next Period Installs:<input type="number" v-model='futureInstalls' /></li>
+                <h3>Next Period Projections</h3>
+                <li>Revenue: $<input type="number" v-model='futureRevenue' /></li>
+                <li>Installs:<input type="number" v-model='futureInstalls' /></li>
                 <br/>
                 <li>Publisher / App Store Cuts:<input type="number" v-model='storeCuts' /></li>
+                <li>Operating Expenses:<input type="number" v-model='opEx' /></li>
                 <br/>
                 <li><div></div><div style="text-align: center; width: 50%"><button v-on:click="doMath">Hit Me</button></div></li>
                 <br/>
                 <li class="amount" v-bind:class="youOwe > 0 ? 'bad': 'good'">You Owe: {{formatMoola()}}</li>
-                <li class="amount" v-bind:class="youOwe > 0 ? 'bad': 'good'">Revenue Share: {{formatRevShare()}}</li>
-                <li class="amount" v-bind:class="youOwe">Revenue per Install: {{formatRPI()}}</li>
-                <li class="amount" v-bind:class="youOwe">Earnings per Install: {{formatEarnings()}}</li>
+                <li class="amount" v-bind:class="youOwe > 0 ? 'bad': 'good'">Unity's Revenue Share: {{formatRevShare()}}</li>
+                <li class="amount" v-bind:class="youOwe">Your Revenue per Install: {{formatRPI()}}</li>
+                <br/>
+                <b><li class="amount" v-bind:class="youOwe">Your <a href="https://en.wikipedia.org/wiki/Earnings_before_interest_and_taxes">EBIT</a> per Install: {{formatEarnings()}}</li></b>
             </ul>            
         </div>
         <div>
@@ -57,6 +61,8 @@
                 futureInstalls: 200000,
                 futureRevenue: 200000,
                 storeCuts : 0.3,
+                opEx : 100000,
+                opExPerInstall : 0,
                 youOwe : 0,
                 revenuePerInstall : 0,
                 revenueShare : 0,
@@ -86,6 +92,7 @@
                 console.log(`installs: ${this.installs}, surplusInstalls: ${surplusInstalls}`);
                 this.youOwe = 0;
                 this.revenueShare = 0;
+                this.opExPerInstall = this.opEx / this.futureInstalls;
                 this.revenuePerInstall = this.revenue / this.installs;
                 if(this.remainingInstalls <= this.thresholdsInstalls[this.inputSubscription] || this.revenue < this.thresholdsRevenue[this.inputSubscription]) return;
 
@@ -113,7 +120,7 @@
                 return this.revenueShare.toFixed(2) + "%";
             },
             formatEarnings(){
-                return (this.revenuePerInstall - this.revenuePerInstall * (this.revenueShare+this.storeCuts)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                return (this.revenuePerInstall - this.revenuePerInstall * (this.revenueShare+this.storeCuts) - this.opExPerInstall).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             }
         },
     }
