@@ -5,7 +5,7 @@ import vue from "@astrojs/vue";
 // https://astro.build/config
 export default defineConfig({
   integrations: [vue()],
-  site: 'https://skidvis.github.io',
+  site: 'https://thygrrr.github.io',
   base: '/unity-fee-calculator',  
 });
 
