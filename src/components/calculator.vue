@@ -87,7 +87,7 @@
         methods: {
             doMath(){
                 //1-100k, 100001-500k, 500001-1M, 1000001+
-                let surplusInstalls = this.futureInstalls + this.installs - this.thresholdsInstalls[this.inputSubscription];    
+                let surplusInstalls = this.futureInstalls + Math.min(this.installs - this.thresholdsInstalls[this.inputSubscription], 0);    
 
                 console.log(`installs: ${this.installs}, surplusInstalls: ${surplusInstalls}`);
                 this.youOwe = 0;
