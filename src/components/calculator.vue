@@ -117,7 +117,8 @@
                 return this.revenuePerInstall.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
             },
             formatRevShare(){
-                return this.revenueShare.toFixed(2) + "%";
+                const revenueSharePct = this.revenueShare * 100;
+                return revenueSharePct.toFixed(2) + "%";
             },
             formatEarnings(){
                 return (this.revenuePerInstall - this.revenuePerInstall * (this.revenueShare+this.storeCuts) - this.opExPerInstall).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
